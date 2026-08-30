@@ -5,6 +5,8 @@ services:
     restart: unless-stopped
     ports:
       - "11434:11434"
+    environment:
+      OLLAMA_CONTEXT_LENGTH: "8192"
     volumes:
       - ollama_data:/root/.ollama
     deploy:
@@ -31,7 +33,7 @@ services:
     environment:
       OLLAMA_HOST: http://ollama:11434
     entrypoint: ["/bin/sh", "-c"]
-    command: ["ollama pull llama3.2:3b"]
+    command: ["ollama pull qwen3:4b-thinking"]
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
