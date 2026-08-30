@@ -33,7 +33,10 @@ services:
     environment:
       OLLAMA_HOST: http://ollama:11434
     entrypoint: ["/bin/sh", "-c"]
-    command: ["ollama pull qwen3:4b-thinking"]
+    command:
+      - >-
+        ollama pull qwen3:4b-instruct &&
+        ollama pull qwen3:4b-thinking
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
