@@ -1,10 +1,13 @@
 # OpenClaw with local Ollama
 
-This stack uses `openclaw.json` directly. No onboarding wizard, one-shot
-bootstrap container, or `config set` commands are required. Configuration is
-mounted read-only; edit the repository file and recreate the gateway to change
-settings. Existing state volumes are preserved, but any old onboarding config
-inside the state volume is no longer the active configuration.
+This stack is self-contained. No onboarding wizard, companion file mount, or
+`config set` commands are required. Configuration lives in the gateway's
+`OPENCLAW_CONFIG_JSON` block in Compose. Startup validates the JSON and writes
+it atomically to `/home/node/.openclaw/declarative.json` in the named state
+volume before starting OpenClaw. Edit Compose and redeploy to change settings.
+Changes made to that generated file are overwritten on restart. Existing state,
+workspace, and auth volumes are preserved; old onboarding configuration is not
+the active config. Secrets remain environment references in the generated file.
 
 ## Deploy
 
@@ -16,11 +19,10 @@ inside the state volume is no longer the active configuration.
 3. Deploy `docker/openclaw/compose.yaml` from the repository, or run
    `docker compose up -d` from this directory on the host.
 
-Portainer must have access to the companion `openclaw.json` file on the Docker
-endpoint: use a Git/checkout deployment supporting relative config files, not
-just a pasted Compose document. A plain Compose deployment from a host checkout
-is the fallback when that Portainer feature is unavailable. Only the gateway
-runs by default; the CLI is an optional administrative service.
+Portainer can deploy this from Git or a pasted Compose document. No relative
+bind mounts or companion config files are required. Only the gateway runs by
+default; the CLI is an optional administrative service. When deploying from
+Git, push the updated Compose file before using Portainer's pull/redeploy action.
 
 All persistence uses named volumes on Docker's configured data drive. No Docker
 socket or general-purpose host directories are mounted.
